@@ -5,8 +5,17 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/auth.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+
+if (in_array($method, ['POST', 'PUT', 'DELETE'])) {
+    if (!isLoggedIn()) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit();
+    }
+}
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $pathParts = explode('/', trim($path, '/'));
 

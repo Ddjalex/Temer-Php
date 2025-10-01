@@ -6,21 +6,6 @@ header('Expires: 0');
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = trim($uri, '/');
 
-if (strpos($uri, 'api/') === 0) {
-    require __DIR__ . '/backend/api.php';
-    exit();
-}
-
-if ($uri === 'admin' || strpos($uri, 'admin/') === 0) {
-    require __DIR__ . '/admin/index.php';
-    exit();
-}
-
-if ($uri === 'property') {
-    require __DIR__ . '/frontend/property.php';
-    exit();
-}
-
 if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|ico)$/', $uri)) {
     $file = __DIR__ . '/' . $uri;
     if (file_exists($file)) {
@@ -39,6 +24,33 @@ if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|ico)$/', $uri)) {
         readfile($file);
         exit();
     }
+}
+
+if (strpos($uri, 'api/') === 0) {
+    require __DIR__ . '/backend/api.php';
+    exit();
+}
+
+if ($uri === 'login') {
+    require __DIR__ . '/admin/login.php';
+    exit();
+}
+
+if ($uri === 'logout') {
+    require_once __DIR__ . '/backend/auth.php';
+    logout();
+    header('Location: /login');
+    exit();
+}
+
+if ($uri === 'admin' || strpos($uri, 'admin/') === 0) {
+    require __DIR__ . '/admin/index.php';
+    exit();
+}
+
+if ($uri === 'property') {
+    require __DIR__ . '/frontend/property.php';
+    exit();
 }
 
 require __DIR__ . '/frontend/index.php';

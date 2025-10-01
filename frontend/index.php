@@ -14,7 +14,6 @@
                 <h1>Temer Properties</h1>
                 <nav>
                     <a href="/">Home</a>
-                    <a href="/admin">Admin</a>
                 </nav>
             </div>
         </div>
