@@ -16,9 +16,10 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 
 **Backend**
 - PHP 8.4.10 (via nix-shell)
-- JSON file-based data storage
+- PostgreSQL database (Neon-backed via Replit)
 - RESTful API design
 - Built-in PHP development server
+- PDO for database abstraction
 
 **Frontend**
 - HTML5/CSS3
@@ -67,9 +68,10 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 - Numeric bounds checking for prices and measurements
 
 **Data Storage**
-- Properties stored in `data/properties.json`
-- File-based storage for simplicity
-- Automatic directory creation on first run
+- PostgreSQL database with 4 tables: properties, sliders, settings, users
+- Database credentials via environment variables (PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD)
+- Automatic connection pooling via PDO
+- Database migrations via migrate.php
 
 ### Frontend Architecture
 
@@ -142,6 +144,20 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 
 ## Recent Changes (October 1, 2025)
 
+**Database Migration - PostgreSQL Setup**
+- Migrated from MySQL/MariaDB to PostgreSQL for Replit compatibility
+- Updated database.php to use PostgreSQL PDO driver with PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD environment variables
+- Converted all MySQL-specific syntax to PostgreSQL:
+  - Changed ENUM to VARCHAR with CHECK constraints
+  - Changed TINYINT to SMALLINT
+  - Changed AUTO_INCREMENT to SERIAL
+  - Removed MySQL-specific clauses (ENGINE, CHARSET, COLLATE, ON UPDATE CURRENT_TIMESTAMP)
+- Updated test-db.php to use PostgreSQL system catalog queries
+- Successfully ran database migration creating 4 tables: properties, sliders, settings, users
+- Created default admin user (username: admin, password: admin123)
+- Seeded default slider and settings data
+- All API endpoints tested and working correctly
+
 **GitHub Import Setup - Completed**
 - Verified PHP 8.4.10 module installation via Replit toolchain
 - Confirmed workflow running PHP development server on port 5000 with 0.0.0.0 host
@@ -165,13 +181,13 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 
 **Current**
 - PHP 8.4.10 module (installed via Replit toolchain)
+- PostgreSQL database (Neon-backed via Replit)
 - No external libraries or frameworks
 - Self-contained application
 
 **Potential Future Enhancements**
-- Database integration (MySQL/PostgreSQL)
 - Image upload and storage service (Cloudinary, AWS S3)
 - Map integration (Google Maps, Mapbox)
 - Email notifications
-- User authentication system
+- Enhanced user role management
 - Payment processing (Stripe)
