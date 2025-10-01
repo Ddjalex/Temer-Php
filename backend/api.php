@@ -16,6 +16,7 @@ if (in_array($method, ['POST', 'PUT', 'DELETE'])) {
         exit();
     }
 }
+
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $pathParts = explode('/', trim($path, '/'));
 
@@ -33,22 +34,31 @@ if (count($pathParts) < 2 || $pathParts[0] !== 'api') {
 $endpoint = $pathParts[1];
 $id = $pathParts[2] ?? null;
 
-switch ($endpoint) {
-    case 'properties':
-        handleProperties($method, $id);
-        break;
-    default:
-        http_response_code(404);
-        echo json_encode(['error' => 'Endpoint not found']);
+try {
+    switch ($endpoint) {
+        case 'properties':
+            handleProperties($method, $id);
+            break;
+        case 'sliders':
+            handleSliders($method, $id);
+            break;
+        case 'settings':
+            handleSettings($method);
+            break;
+        default:
+            http_response_code(404);
+            echo json_encode(['error' => 'Endpoint not found']);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
 }
 
 function handleProperties($method, $id) {
-    $properties = getProperties();
-    
     switch ($method) {
         case 'GET':
             if ($id) {
-                $property = array_values(array_filter($properties, fn($p) => $p['id'] === $id))[0] ?? null;
+                $property = getPropertyById($id);
                 if ($property) {
                     echo json_encode($property);
                 } else {
@@ -56,20 +66,15 @@ function handleProperties($method, $id) {
                     echo json_encode(['error' => 'Property not found']);
                 }
             } else {
-                $type = $_GET['type'] ?? '';
-                $minPrice = isset($_GET['minPrice']) ? (float)$_GET['minPrice'] : null;
-                $maxPrice = isset($_GET['maxPrice']) ? (float)$_GET['maxPrice'] : null;
-                $location = $_GET['location'] ?? '';
+                $filters = [
+                    'type' => $_GET['type'] ?? '',
+                    'minPrice' => $_GET['minPrice'] ?? '',
+                    'maxPrice' => $_GET['maxPrice'] ?? '',
+                    'location' => $_GET['location'] ?? ''
+                ];
                 
-                $filtered = array_filter($properties, function($p) use ($type, $minPrice, $maxPrice, $location) {
-                    if ($type && $p['type'] !== $type) return false;
-                    if ($minPrice && $p['price'] < $minPrice) return false;
-                    if ($maxPrice && $p['price'] > $maxPrice) return false;
-                    if ($location && stripos($p['location'], $location) === false) return false;
-                    return true;
-                });
-                
-                echo json_encode(array_values($filtered));
+                $properties = getProperties($filters);
+                echo json_encode($properties);
             }
             break;
             
@@ -89,7 +94,6 @@ function handleProperties($method, $id) {
             }
             
             $property = [
-                'id' => generateId(),
                 'title' => strip_tags($input['title']),
                 'description' => strip_tags($input['description'] ?? ''),
                 'price' => max(0, (float)($input['price'] ?? 0)),
@@ -99,15 +103,11 @@ function handleProperties($method, $id) {
                 'bathrooms' => max(0, (int)($input['bathrooms'] ?? 0)),
                 'area' => max(0, (int)($input['area'] ?? 0)),
                 'image' => filter_var($input['image'] ?? '', FILTER_SANITIZE_URL),
-                'featured' => (bool)($input['featured'] ?? false),
-                'status' => 'available',
-                'createdAt' => date('Y-m-d H:i:s')
+                'featured' => (bool)($input['featured'] ?? false)
             ];
             
-            $properties[] = $property;
-            saveProperties($properties);
-            
-            echo json_encode($property);
+            $created = createProperty($property);
+            echo json_encode($created);
             break;
             
         case 'PUT':
@@ -125,29 +125,21 @@ function handleProperties($method, $id) {
                 return;
             }
             
-            $found = false;
+            $updates = [];
+            if (isset($input['title'])) $updates['title'] = strip_tags($input['title']);
+            if (isset($input['description'])) $updates['description'] = strip_tags($input['description']);
+            if (isset($input['price'])) $updates['price'] = max(0, (float)$input['price']);
+            if (isset($input['location'])) $updates['location'] = strip_tags($input['location']);
+            if (isset($input['type']) && in_array($input['type'], ['sale', 'rent'])) $updates['type'] = $input['type'];
+            if (isset($input['bedrooms'])) $updates['bedrooms'] = max(0, (int)$input['bedrooms']);
+            if (isset($input['bathrooms'])) $updates['bathrooms'] = max(0, (int)$input['bathrooms']);
+            if (isset($input['area'])) $updates['area'] = max(0, (int)$input['area']);
+            if (isset($input['image'])) $updates['image'] = filter_var($input['image'], FILTER_SANITIZE_URL);
+            if (isset($input['featured'])) $updates['featured'] = (bool)$input['featured'];
             
-            foreach ($properties as &$p) {
-                if ($p['id'] === $id) {
-                    if (isset($input['title'])) $p['title'] = strip_tags($input['title']);
-                    if (isset($input['description'])) $p['description'] = strip_tags($input['description']);
-                    if (isset($input['price'])) $p['price'] = max(0, (float)$input['price']);
-                    if (isset($input['location'])) $p['location'] = strip_tags($input['location']);
-                    if (isset($input['type']) && in_array($input['type'], ['sale', 'rent'])) $p['type'] = $input['type'];
-                    if (isset($input['bedrooms'])) $p['bedrooms'] = max(0, (int)$input['bedrooms']);
-                    if (isset($input['bathrooms'])) $p['bathrooms'] = max(0, (int)$input['bathrooms']);
-                    if (isset($input['area'])) $p['area'] = max(0, (int)$input['area']);
-                    if (isset($input['image'])) $p['image'] = filter_var($input['image'], FILTER_SANITIZE_URL);
-                    if (isset($input['featured'])) $p['featured'] = (bool)$input['featured'];
-                    
-                    $found = true;
-                    echo json_encode($p);
-                    break;
-                }
-            }
-            
-            if ($found) {
-                saveProperties($properties);
+            $updated = updateProperty($id, $updates);
+            if ($updated) {
+                echo json_encode($updated);
             } else {
                 http_response_code(404);
                 echo json_encode(['error' => 'Property not found']);
@@ -161,15 +153,37 @@ function handleProperties($method, $id) {
                 return;
             }
             
-            $newProperties = array_values(array_filter($properties, fn($p) => $p['id'] !== $id));
-            
-            if (count($newProperties) < count($properties)) {
-                saveProperties($newProperties);
+            $deleted = deleteProperty($id);
+            if ($deleted) {
                 echo json_encode(['success' => true]);
             } else {
                 http_response_code(404);
                 echo json_encode(['error' => 'Property not found']);
             }
             break;
+    }
+}
+
+function handleSliders($method, $id) {
+    switch ($method) {
+        case 'GET':
+            $sliders = getSliders();
+            echo json_encode($sliders);
+            break;
+        default:
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+    }
+}
+
+function handleSettings($method) {
+    switch ($method) {
+        case 'GET':
+            $settings = getSettings();
+            echo json_encode($settings);
+            break;
+        default:
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
     }
 }

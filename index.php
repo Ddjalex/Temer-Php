@@ -53,4 +53,9 @@ if ($uri === 'property') {
     exit();
 }
 
+if ($uri === 'test-db') {
+    require __DIR__ . '/test-db.php';
+    exit();
+}
+
 require __DIR__ . '/frontend/index.php';
