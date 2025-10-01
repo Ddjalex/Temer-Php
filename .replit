@@ -1,4 +1,4 @@
-modules = ["php"]
+modules = ["php", "php-8.4"]
 [agent]
 expertMode = true
 
@@ -21,18 +21,14 @@ args = "Server"
 name = "Server"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "nix-shell -p php --run \"php -S 0.0.0.0:5000 -t . index.php\""
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php -S 0.0.0.0:5000 -t . index.php"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 39549
-externalPort = 3001
