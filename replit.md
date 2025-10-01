@@ -113,9 +113,10 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 ## Deployment
 
 **Development Server**
-- Runs on port 5000 via nix-shell
-- Command: `nix-shell -p php --run "php -S 0.0.0.0:5000 -t . index.php"`
+- Runs on port 5000 using PHP 8.4 module
+- Command: `php -S 0.0.0.0:5000 -t . index.php`
 - Configured workflow named "Server"
+- Cache-Control headers enabled to prevent caching in Replit iframe
 
 **For Production**
 - Recommend adding authentication to `/admin` route
@@ -141,18 +142,26 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 
 ## Recent Changes (October 1, 2025)
 
+**GitHub Import Setup**
+- Installed PHP 8.4.10 module via Replit toolchain
+- Configured workflow to run PHP development server on port 5000 with 0.0.0.0 host
+- Added cache-control headers to prevent iframe caching issues in Replit environment
+- Configured deployment for autoscale target
+- Created .gitignore for PHP projects
+- Verified all application components (frontend, admin, API) working correctly
+
+**Previous Implementation**
 - Complete PHP implementation with separate backend/frontend architecture
 - RESTful API with full CRUD operations
 - Admin dashboard with property management
 - Temer Properties branding integration
 - Security hardening (XSS prevention, input validation)
 - Event listener-based interactions for security
-- PHP 8.4 running via nix-shell workflow
 
 ## External Dependencies
 
 **Current**
-- PHP 8.4 (via nix-shell)
+- PHP 8.4.10 module (installed via Replit toolchain)
 - No external libraries or frameworks
 - Self-contained application
 
