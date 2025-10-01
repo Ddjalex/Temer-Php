@@ -1,0 +1,11 @@
+vendor/
+composer.lock
+.DS_Store
+*.log
+*.tmp
+*.cache
+.env
+.env.local
+data/*.json.bak
+frontend/assets/images/properties/
+attached_assets/
