@@ -44,22 +44,22 @@ header('Content-Type: text/html; charset=utf-8');
             $db = Database::getInstance();
             $pdo = $db->getConnection();
             
-            echo '<p class="success">✅ Successfully connected to PostgreSQL!</p>';
-            echo '<p class="info">Host: ' . htmlspecialchars(getenv('PGHOST')) . '</p>';
-            echo '<p class="info">Port: ' . htmlspecialchars(getenv('PGPORT')) . '</p>';
-            echo '<p class="info">Database: ' . htmlspecialchars(getenv('PGDATABASE')) . '</p>';
+            echo '<p class="success">✅ Successfully connected to MySQL!</p>';
+            echo '<p class="info">Host: ' . htmlspecialchars(getenv('DB_HOST')) . '</p>';
+            echo '<p class="info">Port: ' . htmlspecialchars(getenv('DB_PORT')) . '</p>';
+            echo '<p class="info">Database: ' . htmlspecialchars(getenv('DB_NAME')) . '</p>';
             echo '</div>';
             
             echo '<h2>2. Database Tables</h2>';
             echo '<div class="test-section">';
-            $tables = $db->fetchAll("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public'");
+            $tables = $db->fetchAll("SHOW TABLES");
             
             if (count($tables) > 0) {
                 echo '<p class="success">✅ Found ' . count($tables) . ' tables</p>';
                 echo '<table>';
                 echo '<tr><th>Table Name</th><th>Row Count</th></tr>';
                 foreach ($tables as $table) {
-                    $tableName = $table['tablename'];
+                    $tableName = array_values($table)[0];
                     $count = $db->fetchOne("SELECT COUNT(*) as count FROM " . $tableName);
                     echo '<tr><td>' . htmlspecialchars($tableName) . '</td><td>' . $count['count'] . '</td></tr>';
                 }
