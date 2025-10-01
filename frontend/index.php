@@ -20,10 +20,33 @@
         </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <h2>Find Your Dream Property</h2>
-            <p>Discover the perfect place to call home</p>
+    <section class="hero-slider">
+        <div class="slider-container">
+            <div class="slide active">
+                <div class="slide-content">
+                    <h2>Find Your Dream Property</h2>
+                    <p>Discover the perfect place to call home</p>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="slide-content">
+                    <h2>Premium Real Estate Listings</h2>
+                    <p>Explore luxury homes and prime locations</p>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="slide-content">
+                    <h2>Your Trusted Property Partner</h2>
+                    <p>Professional service for buying and renting</p>
+                </div>
+            </div>
+        </div>
+        <button class="slider-nav prev" onclick="changeSlide(-1)">&#10094;</button>
+        <button class="slider-nav next" onclick="changeSlide(1)">&#10095;</button>
+        <div class="slider-dots">
+            <span class="dot active" onclick="goToSlide(0)"></span>
+            <span class="dot" onclick="goToSlide(1)"></span>
+            <span class="dot" onclick="goToSlide(2)"></span>
         </div>
     </section>
 

@@ -1,9 +1,65 @@
 let allProperties = [];
+let currentSlide = 0;
+let slideInterval;
 
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function initSlider() {
+    const slides = document.querySelectorAll('.slide');
+    if (slides.length === 0) return;
+    
+    showSlide(0);
+    startAutoSlide();
+}
+
+function showSlide(index) {
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    
+    if (slides.length === 0) return;
+    
+    if (index >= slides.length) {
+        currentSlide = 0;
+    } else if (index < 0) {
+        currentSlide = slides.length - 1;
+    } else {
+        currentSlide = index;
+    }
+    
+    slides.forEach(slide => slide.classList.remove('active'));
+    slides[currentSlide]?.classList.add('active');
+    
+    if (dots.length > 0) {
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[currentSlide]?.classList.add('active');
+    }
+}
+
+function changeSlide(direction) {
+    showSlide(currentSlide + direction);
+    resetAutoSlide();
+}
+
+function goToSlide(index) {
+    showSlide(index);
+    resetAutoSlide();
+}
+
+function startAutoSlide() {
+    slideInterval = setInterval(() => {
+        showSlide(currentSlide + 1);
+    }, 5000);
+}
+
+function resetAutoSlide() {
+    if (document.querySelectorAll('.slide').length > 0) {
+        clearInterval(slideInterval);
+        startAutoSlide();
+    }
 }
 
 async function loadProperties() {
@@ -18,6 +74,8 @@ async function loadProperties() {
 
 function displayProperties(properties) {
     const container = document.getElementById('propertiesList');
+    
+    if (!container) return;
     
     if (properties.length === 0) {
         container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No properties found</p>';
@@ -69,4 +127,7 @@ function filterProperties() {
     displayProperties(filtered);
 }
 
-loadProperties();
+initSlider();
+if (document.getElementById('propertiesList')) {
+    loadProperties();
+}
