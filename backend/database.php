@@ -5,23 +5,38 @@ class Database {
     private $pdo;
 
     private function __construct() {
-        $host = getenv('PGHOST');
-        $port = getenv('PGPORT') ?: '5432';
-        $dbname = getenv('PGDATABASE');
-        $user = getenv('PGUSER');
-        $password = getenv('PGPASSWORD');
-
-        if (!$host || !$dbname || !$user || !$password) {
-            throw new Exception('Database credentials not configured. Please check PostgreSQL environment variables.');
+        // Load .env file
+        $envFile = __DIR__ . '/../.env';
+        if (file_exists($envFile)) {
+            $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (strpos(trim($line), '#') === 0) continue;
+                if (strpos($line, '=') !== false) {
+                    list($key, $value) = explode('=', $line, 2);
+                    $_ENV[trim($key)] = trim($value);
+                }
+            }
         }
 
-        $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+        $host = $_ENV['DB_HOST'] ?? getenv('DB_HOST');
+        $port = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?: '3306';
+        $dbname = $_ENV['DB_DATABASE'] ?? getenv('DB_DATABASE');
+        $user = $_ENV['DB_USERNAME'] ?? getenv('DB_USERNAME');
+        $password = $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD');
+
+        if (!$host || !$dbname || !$user || !$password) {
+            throw new Exception('Database credentials not configured. Please check .env file or environment variables.');
+        }
+
+        $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
         
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_TIMEOUT => 30
+            PDO::ATTR_TIMEOUT => 30,
+            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+            PDO::MYSQL_ATTR_SSL_CA => false
         ];
 
         try {

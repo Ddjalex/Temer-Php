@@ -15,30 +15,30 @@ try {
             description TEXT,
             price DECIMAL(15,2) NOT NULL DEFAULT 0,
             location VARCHAR(255) NOT NULL,
-            type VARCHAR(10) NOT NULL DEFAULT 'sale' CHECK (type IN ('sale', 'rent')),
+            type ENUM('sale', 'rent') NOT NULL DEFAULT 'sale',
             bedrooms INT NOT NULL DEFAULT 0,
             bathrooms INT NOT NULL DEFAULT 0,
             area INT NOT NULL DEFAULT 0,
             image VARCHAR(500),
-            featured SMALLINT NOT NULL DEFAULT 0,
+            featured TINYINT(1) NOT NULL DEFAULT 0,
             status VARCHAR(50) NOT NULL DEFAULT 'available',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
     echo "Creating sliders table...\n";
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS sliders (
-            id SERIAL PRIMARY KEY,
+            id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             subtitle VARCHAR(255),
             image VARCHAR(500),
             display_order INT NOT NULL DEFAULT 0,
-            active SMALLINT NOT NULL DEFAULT 1,
+            active TINYINT(1) NOT NULL DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
     echo "Creating settings table...\n";
@@ -47,21 +47,21 @@ try {
             setting_key VARCHAR(100) PRIMARY KEY,
             setting_value TEXT,
             setting_type VARCHAR(50) DEFAULT 'text',
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
     echo "Creating users table...\n";
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
+            id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(100) UNIQUE NOT NULL,
             password_hash VARCHAR(255) NOT NULL,
             email VARCHAR(255),
-            role VARCHAR(10) NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user')),
+            role ENUM('admin', 'user') NOT NULL DEFAULT 'user',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_login TIMESTAMP NULL
-        )
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
     echo "Checking if admin user exists...\n";
