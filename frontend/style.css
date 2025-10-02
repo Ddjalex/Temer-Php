@@ -8,12 +8,27 @@
     --temer-green: #8BC34A;
     --temer-dark: #558B2F;
     --temer-light: #DCEDC8;
+    --bg-color: #ffffff;
+    --text-color: #333;
+    --card-bg: #ffffff;
+    --border-color: #e1e8ed;
+    --footer-bg: #2c3e50;
+}
+
+body.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --card-bg: #2d2d2d;
+    --border-color: #404040;
+    --footer-bg: #0d0d0d;
 }
 
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
-    color: #333;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -177,8 +192,9 @@ header nav a:hover {
 }
 
 .filters {
-    background: #f5f5f5;
+    background: var(--card-bg);
     padding: 30px 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .filter-group {
@@ -191,9 +207,11 @@ header nav a:hover {
 .filter-group input,
 .filter-group button {
     padding: 10px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1rem;
+    background: var(--bg-color);
+    color: var(--text-color);
 }
 
 .filter-group button {
@@ -219,12 +237,13 @@ header nav a:hover {
 }
 
 .property-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s;
     cursor: pointer;
+    border: 1px solid var(--border-color);
 }
 
 .property-card:hover {
@@ -255,7 +274,8 @@ header nav a:hover {
 }
 
 .property-card .location {
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     margin-bottom: 15px;
 }
 
@@ -264,7 +284,8 @@ header nav a:hover {
     gap: 15px;
     flex-wrap: wrap;
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     margin-bottom: 15px;
 }
 
@@ -546,7 +567,7 @@ header nav a:hover {
 }
 
 footer {
-    background: var(--temer-dark);
+    background: var(--footer-bg);
     color: white;
     padding: 30px 0;
     margin-top: 60px;
@@ -598,3 +619,28 @@ footer {
         text-align: center;
     }
 }
+
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.dark-mode-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.dark-mode-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
