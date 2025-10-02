@@ -91,14 +91,20 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 **Admin Dashboard** (`/admin`)
 - Hero Slider management with image upload
   - Add/Edit/Delete sliders
-  - Upload images or use URL
-  - Image preview
+  - Upload images via file picker or enter URL
+  - Real-time image preview
   - Set display order and active status
   - Live preview in admin dashboard
-- Property management table
-- Create/Edit/Delete operations
-- Inline editing with form validation
-- Real-time updates
+- Property management with image upload
+  - Add/Edit/Delete properties
+  - Upload images via file picker or enter URL
+  - Real-time image preview
+  - Inline editing with form validation
+  - Featured property toggle
+- Settings management
+  - Site information (name, tagline, contact)
+  - Social media links (Facebook, Instagram, Twitter, LinkedIn)
+  - Dynamic footer updates
 
 **Design System**
 - Temer green color scheme (#8BC34A, #558B2F, #DCEDC8)
@@ -184,14 +190,32 @@ This project was imported fresh from a GitHub repository and has been fully conf
 - Deployment configuration set to autoscale deployment target (port 80)
 - All PostgreSQL environment variables properly configured
 
+**File Upload Functionality**
+- ✅ Added file upload inputs to admin panel for both properties and sliders
+- ✅ Users can now upload images via file picker or enter URL manually
+- ✅ Real-time image preview displays selected/uploaded images
+- ✅ Upload API endpoint (`POST /api/upload`) handles image uploads with validation
+- ✅ Supported formats: JPG, PNG, GIF, WEBP (max 5MB)
+- ✅ Images stored in `uploads/` directory and accessible via public URL
+- ✅ Image preview updates automatically on file selection or URL input
+
+**Social Media Management**
+- ✅ Added social media link management to admin settings panel
+- ✅ Four new settings fields: Facebook, Instagram, Twitter, LinkedIn URLs
+- ✅ Dynamic footer displays social media icons based on settings
+- ✅ Empty URLs automatically hide corresponding social media icons
+- ✅ Telegram contact link added to footer (@Ethioads012)
+
 **Testing & Verification**
 - ✅ Database connection verified - All API endpoints functional
 - ✅ GET /api/properties returns empty array (no properties added yet)
 - ✅ GET /api/sliders returns 3 default sliders
-- ✅ GET /api/settings returns default site settings
+- ✅ GET /api/settings returns default site settings including social media URLs
 - ✅ Frontend homepage displays correctly with hero slider, search filters, and branding
 - ✅ Workflow running without errors
 - ✅ All application components ready (frontend, admin panel, API)
+- ✅ File upload functionality tested and working
+- ✅ Image preview working for both properties and sliders
 
 **Project Status**
 - ✅ Fresh GitHub import successfully configured for Replit environment
@@ -199,6 +223,8 @@ This project was imported fresh from a GitHub repository and has been fully conf
 - ✅ All API endpoints functional
 - ✅ Frontend verified working with screenshot
 - ✅ Admin panel ready (accessible at /admin with credentials above)
+- ✅ File upload system operational with image validation
+- ✅ Social media management functional
 - ✅ Deployment configuration complete and ready for publishing
 - ✅ Ready to add property listings via admin dashboard
 

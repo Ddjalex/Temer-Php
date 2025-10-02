@@ -135,9 +135,14 @@ requireLogin();
                         <textarea id="description"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="image">Image URL</label>
+                        <label for="propertyImageFile">Upload Image</label>
+                        <input type="file" id="propertyImageFile" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Or Enter Image URL</label>
                         <input type="text" id="image" placeholder="https://example.com/property.jpg">
                     </div>
+                    <div id="propertyImagePreview" class="image-preview" style="display:none;"></div>
                     <div class="form-group">
                         <label>
                             <input type="checkbox" id="featured">

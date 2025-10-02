@@ -134,6 +134,12 @@ async function editProperty(id) {
         document.getElementById('image').value = property.image || '';
         document.getElementById('featured').checked = property.featured || false;
         
+        if (property.image) {
+            document.getElementById('propertyImagePreview').innerHTML = 
+                `<img src="${escapeHtml(property.image)}" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
+            document.getElementById('propertyImagePreview').style.display = 'block';
+        }
+        
         editingId = id;
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
@@ -159,6 +165,8 @@ async function deleteProperty(id) {
 function resetForm() {
     document.getElementById('propertyForm').reset();
     document.getElementById('propertyId').value = '';
+    document.getElementById('propertyImagePreview').innerHTML = '';
+    document.getElementById('propertyImagePreview').style.display = 'none';
     editingId = null;
 }
 
@@ -342,6 +350,37 @@ document.getElementById('sliderImageFile').addEventListener('change', async (e) 
             document.getElementById('sliderImage').value = result.url;
             document.getElementById('sliderImagePreview').innerHTML = 
                 `<img src="${escapeHtml(result.url)}" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
+            document.getElementById('sliderImagePreview').style.display = 'block';
+        } else {
+            alert('Upload failed: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Upload failed');
+    }
+});
+
+document.getElementById('propertyImageFile').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('type', 'property');
+    
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('image').value = result.url;
+            document.getElementById('propertyImagePreview').innerHTML = 
+                `<img src="${escapeHtml(result.url)}" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
+            document.getElementById('propertyImagePreview').style.display = 'block';
         } else {
             alert('Upload failed: ' + (result.error || 'Unknown error'));
         }
@@ -458,7 +497,24 @@ document.getElementById('sliderImage').addEventListener('input', function() {
     const preview = document.getElementById('sliderImagePreview');
     if (this.value) {
         preview.style.display = 'block';
-        preview.innerHTML = `<img src="${escapeHtml(this.value)}" alt="Preview">`;
+        preview.innerHTML = `<img src="${escapeHtml(this.value)}" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
+    } else {
+        preview.style.display = 'none';
+    }
+});
+
+document.getElementById('propertyImageFile').addEventListener('change', function() {
+    const preview = document.getElementById('propertyImagePreview');
+    if (this.files && this.files[0]) {
+        preview.style.display = 'block';
+    }
+});
+
+document.getElementById('image').addEventListener('input', function() {
+    const preview = document.getElementById('propertyImagePreview');
+    if (this.value) {
+        preview.style.display = 'block';
+        preview.innerHTML = `<img src="${escapeHtml(this.value)}" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
     } else {
         preview.style.display = 'none';
     }
