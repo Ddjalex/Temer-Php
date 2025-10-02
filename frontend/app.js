@@ -98,7 +98,8 @@ async function displayProperties(properties) {
     
     container.innerHTML = properties.map(property => {
         const phone = contactPhone.replace(/\D/g, '');
-        const whatsappMessage = encodeURIComponent(`Hi, I'm interested in ${property.title} at ${property.location}`);
+        const propertyUrl = `${window.location.origin}/property?id=${encodeURIComponent(property.id)}`;
+        const whatsappMessage = encodeURIComponent(`I'm interested in ${property.title}. Property link: ${propertyUrl}`);
         
         return `
         <div class="property-card" data-property-id="${escapeHtml(property.id)}">
