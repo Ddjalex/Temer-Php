@@ -75,7 +75,7 @@
         <div class="container">
             <div class="footer-content">
                 <p>&copy; 2025 Temer Properties. All rights reserved.</p>
-                <p>Want to develop a website? Contact <a href="https://t.me/Ethioads012" target="_blank" style="color: #8BC34A; text-decoration: none;">@Ethioads012</a> on Telegram</p>
+                <p>Do Yo develop a website? Contact <a href="https://t.me/Ethioads012" target="_blank" style="color: #8BC34A; text-decoration: none;">@Ethioads012</a> on Telegram</p>
                 <div class="social-links">
                     <a href="https://facebook.com/temerproperties" target="_blank" aria-label="Facebook">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
