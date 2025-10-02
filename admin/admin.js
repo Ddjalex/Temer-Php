@@ -3,6 +3,14 @@ let editingSliderId = null;
 let currentSlide = 0;
 let slideInterval;
 
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(tabName + 'Tab').classList.add('active');
+}
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -380,6 +388,75 @@ document.getElementById('sliderForm').addEventListener('submit', async (e) => {
     }
 });
 
+async function loadSettings() {
+    try {
+        const response = await fetch('/api/settings');
+        const settings = await response.json();
+        
+        document.getElementById('siteName').value = settings.site_name || '';
+        document.getElementById('siteTagline').value = settings.site_tagline || '';
+        document.getElementById('contactPhone').value = settings.contact_phone || '';
+        document.getElementById('contactEmail').value = settings.contact_email || '';
+    } catch (error) {
+        console.error('Error loading settings:', error);
+    }
+}
+
+document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const settingsData = {
+        site_name: document.getElementById('siteName').value,
+        site_tagline: document.getElementById('siteTagline').value,
+        contact_phone: document.getElementById('contactPhone').value,
+        contact_email: document.getElementById('contactEmail').value
+    };
+    
+    const messageDiv = document.getElementById('settingsMessage');
+    
+    try {
+        const response = await fetch('/api/settings', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(settingsData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            messageDiv.innerHTML = '<div class="alert alert-success">Settings saved successfully!</div>';
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        } else {
+            messageDiv.innerHTML = '<div class="alert alert-error">Failed to save settings</div>';
+        }
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        messageDiv.innerHTML = '<div class="alert alert-error">Error saving settings</div>';
+    }
+});
+
+document.getElementById('sliderImageFile').addEventListener('change', function() {
+    const preview = document.getElementById('sliderImagePreview');
+    if (this.files && this.files[0]) {
+        preview.style.display = 'block';
+    }
+});
+
+document.getElementById('sliderImage').addEventListener('input', function() {
+    const preview = document.getElementById('sliderImagePreview');
+    if (this.value) {
+        preview.style.display = 'block';
+        preview.innerHTML = `<img src="${escapeHtml(this.value)}" alt="Preview">`;
+    } else {
+        preview.style.display = 'none';
+    }
+});
+
 initSlider();
 loadSliders();
 loadProperties();
+loadSettings();

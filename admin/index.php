@@ -9,144 +9,134 @@ requireLogin();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Temer Properties</title>
     <link rel="stylesheet" href="/frontend/style.css">
+    <link rel="stylesheet" href="/admin/admin-style.css">
 </head>
 <body>
-    <header>
+    <div class="admin-header">
         <div class="container">
-            <div class="header-content">
+            <div class="logo-section">
                 <img src="/frontend/assets/images/temer-logo.jpg" alt="Temer Properties" class="logo">
-                <h1>Temer Properties - Admin</h1>
-                <nav>
-                    <a href="/">Back to Site</a>
-                    <a href="/logout" style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 4px;">Logout</a>
-                </nav>
+                <h1>Admin Dashboard</h1>
             </div>
+            <nav>
+                <a href="/">View Site</a>
+                <a href="/logout" style="background: rgba(255,255,255,0.2);">Logout</a>
+            </nav>
         </div>
-    </header>
+    </div>
 
-    <section class="hero-slider">
-        <div class="slider-container">
-            <div class="slide active">
-                <div class="slide-content">
-                    <h2>Welcome to Admin Dashboard</h2>
-                    <p>Manage your property listings efficiently</p>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="slide-content">
-                    <h2>Add New Properties</h2>
-                    <p>Create and showcase amazing real estate listings</p>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="slide-content">
-                    <h2>Edit & Update</h2>
-                    <p>Keep your property information current and accurate</p>
-                </div>
-            </div>
+    <div class="admin-container">
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('sliders')">Hero Sliders</button>
+            <button class="tab-btn" onclick="switchTab('properties')">Properties</button>
+            <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
         </div>
-        <button class="slider-nav prev" onclick="changeSlide(-1)">&#10094;</button>
-        <button class="slider-nav next" onclick="changeSlide(1)">&#10095;</button>
-        <div class="slider-dots">
-            <span class="dot active" onclick="goToSlide(0)"></span>
-            <span class="dot" onclick="goToSlide(1)"></span>
-            <span class="dot" onclick="goToSlide(2)"></span>
-        </div>
-    </section>
 
-    <section class="admin-section">
-        <div class="container">
-            <h2>Manage Hero Sliders</h2>
-            <div class="admin-form">
+        <div id="slidersTab" class="tab-content active">
+            <div class="admin-card">
+                <h2>Manage Hero Sliders</h2>
                 <form id="sliderForm">
                     <input type="hidden" id="sliderId">
-                    <div class="form-group">
-                        <label for="sliderTitle">Title</label>
-                        <input type="text" id="sliderTitle" required>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="sliderTitle">Title *</label>
+                            <input type="text" id="sliderTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sliderSubtitle">Subtitle</label>
+                            <input type="text" id="sliderSubtitle">
+                        </div>
+                        <div class="form-group">
+                            <label for="sliderOrder">Display Order</label>
+                            <input type="number" id="sliderOrder" value="0" min="0">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="sliderSubtitle">Subtitle</label>
-                        <input type="text" id="sliderSubtitle">
-                    </div>
-                    <div class="form-group">
-                        <label for="sliderImage">Image</label>
+                        <label for="sliderImageFile">Upload Image</label>
                         <input type="file" id="sliderImageFile" accept="image/*">
-                        <input type="text" id="sliderImage" placeholder="Or enter image URL" style="margin-top: 10px;">
-                        <div id="sliderImagePreview" style="margin-top: 10px;"></div>
                     </div>
                     <div class="form-group">
-                        <label for="sliderOrder">Display Order</label>
-                        <input type="number" id="sliderOrder" value="0" min="0">
+                        <label for="sliderImage">Or Enter Image URL</label>
+                        <input type="text" id="sliderImage" placeholder="https://example.com/image.jpg">
                     </div>
+                    <div id="sliderImagePreview" class="image-preview" style="display:none;"></div>
                     <div class="form-group">
                         <label>
                             <input type="checkbox" id="sliderActive" checked>
                             Active
                         </label>
                     </div>
-                    <button type="submit" class="btn">Save Slider</button>
-                    <button type="button" class="btn" onclick="resetSliderForm()" style="background: #666;">Cancel</button>
+                    <div class="btn-group">
+                        <button type="submit" class="btn">Save Slider</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetSliderForm()">Cancel</button>
+                    </div>
                 </form>
             </div>
 
-            <h2>Existing Sliders</h2>
-            <div class="admin-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Subtitle</th>
-                            <th>Order</th>
-                            <th>Active</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="slidersTable"></tbody>
-                </table>
+            <div class="admin-card">
+                <h2>Existing Sliders</h2>
+                <div class="admin-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subtitle</th>
+                                <th>Order</th>
+                                <th>Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="slidersTable"></tbody>
+                    </table>
+                </div>
             </div>
+        </div>
 
-            <h2>Add New Property</h2>
-            <div class="admin-form">
+        <div id="propertiesTab" class="tab-content">
+            <div class="admin-card">
+                <h2>Add / Edit Property</h2>
                 <form id="propertyForm">
                     <input type="hidden" id="propertyId">
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" id="title" required>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="title">Title *</label>
+                            <input type="text" id="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location *</label>
+                            <input type="text" id="location" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price *</label>
+                            <input type="number" id="price" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Type *</label>
+                            <select id="type" required>
+                                <option value="sale">For Sale</option>
+                                <option value="rent">For Rent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bedrooms">Bedrooms</label>
+                            <input type="number" id="bedrooms" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="bathrooms">Bathrooms</label>
+                            <input type="number" id="bathrooms" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="area">Area (sqft)</label>
+                            <input type="number" id="area" value="0">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea id="description" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="price">Price</label>
-                        <input type="number" id="price" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <input type="text" id="location" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="type">Type</label>
-                        <select id="type" required>
-                            <option value="sale">For Sale</option>
-                            <option value="rent">For Rent</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="bedrooms">Bedrooms</label>
-                        <input type="number" id="bedrooms" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bathrooms">Bathrooms</label>
-                        <input type="number" id="bathrooms" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="area">Area (sqft)</label>
-                        <input type="number" id="area" required>
+                        <textarea id="description"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="image">Image URL</label>
-                        <input type="text" id="image" placeholder="https://example.com/image.jpg">
+                        <input type="text" id="image" placeholder="https://example.com/property.jpg">
                     </div>
                     <div class="form-group">
                         <label>
@@ -154,28 +144,65 @@ requireLogin();
                             Featured Property
                         </label>
                     </div>
-                    <button type="submit" class="btn">Save Property</button>
-                    <button type="button" class="btn" onclick="resetForm()" style="background: #666;">Cancel</button>
+                    <div class="btn-group">
+                        <button type="submit" class="btn">Save Property</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancel</button>
+                    </div>
                 </form>
             </div>
 
-            <h2>Manage Properties</h2>
-            <div class="admin-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Location</th>
-                            <th>Price</th>
-                            <th>Type</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="propertiesTable"></tbody>
-                </table>
+            <div class="admin-card">
+                <h2>Manage Properties</h2>
+                <div class="admin-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Location</th>
+                                <th>Price</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propertiesTable"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </section>
+
+        <div id="settingsTab" class="tab-content">
+            <div class="admin-card">
+                <h2>Website Settings</h2>
+                <form id="settingsForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="siteName">Site Name</label>
+                            <input type="text" id="siteName" name="site_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="siteTagline">Site Tagline</label>
+                            <input type="text" id="siteTagline" name="site_tagline">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactPhone">Contact Phone Number *</label>
+                            <input type="tel" id="contactPhone" name="contact_phone" placeholder="+1234567890" required>
+                            <small style="color: var(--text-light); font-size: 12px; margin-top: 5px; display: block;">
+                                Used for call and WhatsApp buttons on the website
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Contact Email</label>
+                            <input type="email" id="contactEmail" name="contact_email">
+                        </div>
+                    </div>
+                    <div id="settingsMessage"></div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn">Save Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="/admin/admin.js"></script>
 </body>
