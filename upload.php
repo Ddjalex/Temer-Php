@@ -41,6 +41,11 @@ if (!isset($_FILES['image_file']) || $_FILES['image_file']['error'] !== UPLOAD_E
 $title = trim($_POST['title']);
 $file = $_FILES['image_file'];
 
+$maxFileSize = 5 * 1024 * 1024; // 5MB
+if ($file['size'] > $maxFileSize) {
+    displayMessage('File is too large. Maximum allowed size is 5MB.', true);
+}
+
 $allowedTypes = ['image/jpeg', 'image/png'];
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mimeType = finfo_file($finfo, $file['tmp_name']);

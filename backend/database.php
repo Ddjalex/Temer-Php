@@ -20,12 +20,12 @@ class Database {
         }
 
         // --- Use standard MySQL environment variables ---
-        $host = getenv('DB_HOST');
-        $port = getenv('DB_PORT') ?: '3306'; // Default MySQL port
-        $dbname = getenv('DB_DATABASE');
-        $user = getenv('DB_USERNAME'); // Using DB_USERNAME as per your previous .env snippet
-        $password = getenv('DB_PASSWORD');
-        $ssl_ca = getenv('MYSQL_SSL_CA'); // New variable for SSL Certificate path
+        $host = $_ENV['DB_HOST'] ?? getenv('DB_HOST');
+        $port = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?: '3306'; // Default MySQL port
+        $dbname = $_ENV['DB_DATABASE'] ?? getenv('DB_DATABASE');
+        $user = $_ENV['DB_USERNAME'] ?? getenv('DB_USERNAME'); // Using DB_USERNAME as per your previous .env snippet
+        $password = $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD');
+        $ssl_ca = $_ENV['MYSQL_SSL_CA'] ?? getenv('MYSQL_SSL_CA'); // New variable for SSL Certificate path
 
         if (!$host || !$dbname || !$user || !$password) {
             throw new Exception('Database credentials not configured. Please check environment variables (DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD).');
