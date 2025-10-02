@@ -268,8 +268,52 @@ header nav a:hover {
     margin-bottom: 15px;
 }
 
-.property-actions {
+.property-contact-buttons {
+    display: flex;
+    gap: 10px;
     margin-top: 15px;
+}
+
+.contact-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.whatsapp-btn {
+    background: #25D366;
+    color: white;
+}
+
+.whatsapp-btn:hover {
+    background: #20BA5A;
+}
+
+.call-btn {
+    background: #4A90E2;
+    color: white;
+}
+
+.call-btn:hover {
+    background: #357ABD;
+}
+
+.contact-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.property-actions {
+    margin-top: 10px;
 }
 
 .view-details-btn {
