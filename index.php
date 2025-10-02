@@ -27,7 +27,11 @@ if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|ico)$/', $uri)) {
 }
 
 if (strpos($uri, 'api/') === 0) {
-    require __DIR__ . '/backend/api.php';
+    if ($uri === 'api/upload') {
+        require __DIR__ . '/backend/upload.php';
+    } else {
+        require __DIR__ . '/backend/api.php';
+    }
     exit();
 }
 

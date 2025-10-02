@@ -56,6 +56,55 @@ requireLogin();
 
     <section class="admin-section">
         <div class="container">
+            <h2>Manage Hero Sliders</h2>
+            <div class="admin-form">
+                <form id="sliderForm">
+                    <input type="hidden" id="sliderId">
+                    <div class="form-group">
+                        <label for="sliderTitle">Title</label>
+                        <input type="text" id="sliderTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sliderSubtitle">Subtitle</label>
+                        <input type="text" id="sliderSubtitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="sliderImage">Image</label>
+                        <input type="file" id="sliderImageFile" accept="image/*">
+                        <input type="text" id="sliderImage" placeholder="Or enter image URL" style="margin-top: 10px;">
+                        <div id="sliderImagePreview" style="margin-top: 10px;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sliderOrder">Display Order</label>
+                        <input type="number" id="sliderOrder" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="sliderActive" checked>
+                            Active
+                        </label>
+                    </div>
+                    <button type="submit" class="btn">Save Slider</button>
+                    <button type="button" class="btn" onclick="resetSliderForm()" style="background: #666;">Cancel</button>
+                </form>
+            </div>
+
+            <h2>Existing Sliders</h2>
+            <div class="admin-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Subtitle</th>
+                            <th>Order</th>
+                            <th>Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="slidersTable"></tbody>
+                </table>
+            </div>
+
             <h2>Add New Property</h2>
             <div class="admin-form">
                 <form id="propertyForm">

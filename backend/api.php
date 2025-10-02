@@ -167,9 +167,94 @@ function handleProperties($method, $id) {
 function handleSliders($method, $id) {
     switch ($method) {
         case 'GET':
-            $sliders = getSliders();
-            echo json_encode($sliders);
+            if ($id) {
+                $slider = getSliderById($id);
+                if ($slider) {
+                    echo json_encode($slider);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Slider not found']);
+                }
+            } else {
+                $sliders = getSliders();
+                echo json_encode($sliders);
+            }
             break;
+            
+        case 'POST':
+            $input = json_decode(file_get_contents('php://input'), true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid JSON']);
+                return;
+            }
+            
+            if (empty($input['title'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Title is required']);
+                return;
+            }
+            
+            $slider = [
+                'title' => strip_tags($input['title']),
+                'subtitle' => strip_tags($input['subtitle'] ?? ''),
+                'image' => filter_var($input['image'] ?? '', FILTER_SANITIZE_URL),
+                'display_order' => max(0, (int)($input['display_order'] ?? 0)),
+                'active' => isset($input['active']) ? (int)(bool)$input['active'] : 1
+            ];
+            
+            $created = createSlider($slider);
+            echo json_encode($created);
+            break;
+            
+        case 'PUT':
+            if (!$id) {
+                http_response_code(400);
+                echo json_encode(['error' => 'ID required']);
+                return;
+            }
+            
+            $input = json_decode(file_get_contents('php://input'), true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid JSON']);
+                return;
+            }
+            
+            $updates = [];
+            if (isset($input['title'])) $updates['title'] = strip_tags($input['title']);
+            if (isset($input['subtitle'])) $updates['subtitle'] = strip_tags($input['subtitle']);
+            if (isset($input['image'])) $updates['image'] = filter_var($input['image'], FILTER_SANITIZE_URL);
+            if (isset($input['display_order'])) $updates['display_order'] = max(0, (int)$input['display_order']);
+            if (isset($input['active'])) $updates['active'] = (int)(bool)$input['active'];
+            
+            $updated = updateSlider($id, $updates);
+            if ($updated) {
+                echo json_encode($updated);
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Slider not found']);
+            }
+            break;
+            
+        case 'DELETE':
+            if (!$id) {
+                http_response_code(400);
+                echo json_encode(['error' => 'ID required']);
+                return;
+            }
+            
+            $deleted = deleteSlider($id);
+            if ($deleted) {
+                echo json_encode(['success' => true]);
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Slider not found']);
+            }
+            break;
+            
         default:
             http_response_code(405);
             echo json_encode(['error' => 'Method not allowed']);

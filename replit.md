@@ -53,11 +53,20 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 ### Backend Architecture
 
 **RESTful API Endpoints**
-- `GET /api/properties` - Retrieve all properties (with optional filters)
-- `GET /api/properties/:id` - Get single property
-- `POST /api/properties` - Create new property
-- `PUT /api/properties/:id` - Update property
-- `DELETE /api/properties/:id` - Delete property
+- Properties:
+  - `GET /api/properties` - Retrieve all properties (with optional filters)
+  - `GET /api/properties/:id` - Get single property
+  - `POST /api/properties` - Create new property
+  - `PUT /api/properties/:id` - Update property
+  - `DELETE /api/properties/:id` - Delete property
+- Sliders:
+  - `GET /api/sliders` - Retrieve all sliders
+  - `GET /api/sliders/:id` - Get single slider
+  - `POST /api/sliders` - Create new slider
+  - `PUT /api/sliders/:id` - Update slider
+  - `DELETE /api/sliders/:id` - Delete slider
+- Upload:
+  - `POST /api/upload` - Upload image file (returns URL)
 
 **Security Features**
 - Input validation with `strip_tags()` for text fields
@@ -80,6 +89,12 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 - **Property Detail** (`/property?id=xxx`) - Individual property view with full details
 
 **Admin Dashboard** (`/admin`)
+- Hero Slider management with image upload
+  - Add/Edit/Delete sliders
+  - Upload images or use URL
+  - Image preview
+  - Set display order and active status
+  - Live preview in admin dashboard
 - Property management table
 - Create/Edit/Delete operations
 - Inline editing with form validation
@@ -143,6 +158,24 @@ A dynamic real estate listing website built with PHP for Temer Properties. The a
 - Database migration for better concurrency
 
 ## Recent Changes (October 2, 2025)
+
+**Hero Slider Image Management Feature Added**
+- Added complete slider management in admin dashboard
+  - Create/Edit/Delete sliders with image upload functionality
+  - Support for both file upload and URL input
+  - Image preview before saving
+  - Display order and active/inactive status control
+- Implemented image upload endpoint (`/api/upload`)
+  - File type validation (JPG, PNG, GIF, WEBP)
+  - File size limit (5MB maximum)
+  - Automatic filename generation with unique IDs
+  - Secure upload handling with authentication
+- Added full CRUD API endpoints for sliders
+- Frontend now dynamically loads sliders from database
+- Admin dashboard hero slider updates in real-time
+- Images stored in `/frontend/assets/images/` directory
+
+## Previous Changes (October 2, 2025)
 
 **GitHub Import Setup - PostgreSQL Configuration Completed**
 - Configured database.php to use PostgreSQL PDO driver with Replit environment variables (PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD)

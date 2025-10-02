@@ -127,7 +127,46 @@ function filterProperties() {
     displayProperties(filtered);
 }
 
-initSlider();
+async function loadSliders() {
+    try {
+        const response = await fetch('/api/sliders');
+        const sliders = await response.json();
+        updateHeroSlider(sliders);
+    } catch (error) {
+        console.error('Error loading sliders:', error);
+        initSlider();
+    }
+}
+
+function updateHeroSlider(sliders) {
+    const activeSliders = sliders.filter(s => s.active);
+    if (activeSliders.length === 0) {
+        initSlider();
+        return;
+    }
+    
+    const sliderContainer = document.querySelector('.slider-container');
+    const dotsContainer = document.querySelector('.slider-dots');
+    
+    if (!sliderContainer || !dotsContainer) return;
+    
+    sliderContainer.innerHTML = activeSliders.map(slider => `
+        <div class="slide" ${slider.image ? `style="background-image: url('${escapeHtml(slider.image)}')"` : ''}>
+            <div class="slide-content">
+                <h2>${escapeHtml(slider.title)}</h2>
+                <p>${escapeHtml(slider.subtitle || '')}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    dotsContainer.innerHTML = activeSliders.map((_, index) => 
+        `<span class="dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></span>`
+    ).join('');
+    
+    initSlider();
+}
+
+loadSliders();
 if (document.getElementById('propertiesList')) {
     loadProperties();
 }

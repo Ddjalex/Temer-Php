@@ -1,4 +1,5 @@
 let editingId = null;
+let editingSliderId = null;
 let currentSlide = 0;
 let slideInterval;
 
@@ -195,5 +196,190 @@ document.getElementById('propertyForm').addEventListener('submit', async (e) => 
     }
 });
 
+async function loadSliders() {
+    try {
+        const response = await fetch('/api/sliders');
+        const sliders = await response.json();
+        displaySlidersTable(sliders);
+        updateHeroSlider(sliders);
+    } catch (error) {
+        console.error('Error loading sliders:', error);
+    }
+}
+
+function displaySlidersTable(sliders) {
+    const tbody = document.getElementById('slidersTable');
+    
+    if (sliders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No sliders yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = sliders.map(slider => `
+        <tr data-slider-id="${escapeHtml(slider.id)}">
+            <td>${escapeHtml(slider.title)}</td>
+            <td>${escapeHtml(slider.subtitle || '')}</td>
+            <td>${slider.display_order}</td>
+            <td>${slider.active ? 'Yes' : 'No'}</td>
+            <td>
+                <button class="btn-edit">Edit</button>
+                <button class="btn-delete">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+    
+    tbody.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.closest('tr').dataset.sliderId;
+            editSlider(id);
+        });
+    });
+    
+    tbody.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.closest('tr').dataset.sliderId;
+            deleteSlider(id);
+        });
+    });
+}
+
+function updateHeroSlider(sliders) {
+    const activeSliders = sliders.filter(s => s.active);
+    if (activeSliders.length === 0) return;
+    
+    const sliderContainer = document.querySelector('.slider-container');
+    const dotsContainer = document.querySelector('.slider-dots');
+    
+    if (!sliderContainer || !dotsContainer) return;
+    
+    sliderContainer.innerHTML = activeSliders.map(slider => `
+        <div class="slide" ${slider.image ? `style="background-image: url('${escapeHtml(slider.image)}')"` : ''}>
+            <div class="slide-content">
+                <h2>${escapeHtml(slider.title)}</h2>
+                <p>${escapeHtml(slider.subtitle || '')}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    dotsContainer.innerHTML = activeSliders.map((_, index) => 
+        `<span class="dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></span>`
+    ).join('');
+    
+    initSlider();
+}
+
+async function editSlider(id) {
+    try {
+        const response = await fetch(`/api/sliders/${encodeURIComponent(id)}`);
+        const slider = await response.json();
+        
+        document.getElementById('sliderId').value = slider.id;
+        document.getElementById('sliderTitle').value = slider.title;
+        document.getElementById('sliderSubtitle').value = slider.subtitle || '';
+        document.getElementById('sliderImage').value = slider.image || '';
+        document.getElementById('sliderOrder').value = slider.display_order;
+        document.getElementById('sliderActive').checked = slider.active;
+        
+        if (slider.image) {
+            document.getElementById('sliderImagePreview').innerHTML = 
+                `<img src="${escapeHtml(slider.image)}" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
+        }
+        
+        editingSliderId = id;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+        console.error('Error loading slider:', error);
+    }
+}
+
+async function deleteSlider(id) {
+    if (!confirm('Are you sure you want to delete this slider?')) {
+        return;
+    }
+    
+    try {
+        await fetch(`/api/sliders/${encodeURIComponent(id)}`, {
+            method: 'DELETE'
+        });
+        loadSliders();
+    } catch (error) {
+        console.error('Error deleting slider:', error);
+    }
+}
+
+function resetSliderForm() {
+    document.getElementById('sliderForm').reset();
+    document.getElementById('sliderId').value = '';
+    document.getElementById('sliderImagePreview').innerHTML = '';
+    editingSliderId = null;
+}
+
+document.getElementById('sliderImageFile').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('type', 'slider');
+    
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('sliderImage').value = result.url;
+            document.getElementById('sliderImagePreview').innerHTML = 
+                `<img src="${escapeHtml(result.url)}" style="max-width: 200px; max-height: 150px; border-radius: 4px;">`;
+        } else {
+            alert('Upload failed: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Upload failed');
+    }
+});
+
+document.getElementById('sliderForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const sliderData = {
+        title: document.getElementById('sliderTitle').value,
+        subtitle: document.getElementById('sliderSubtitle').value,
+        image: document.getElementById('sliderImage').value,
+        display_order: parseInt(document.getElementById('sliderOrder').value),
+        active: document.getElementById('sliderActive').checked ? 1 : 0
+    };
+    
+    try {
+        if (editingSliderId) {
+            await fetch(`/api/sliders/${encodeURIComponent(editingSliderId)}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sliderData)
+            });
+        } else {
+            await fetch('/api/sliders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sliderData)
+            });
+        }
+        
+        resetSliderForm();
+        loadSliders();
+    } catch (error) {
+        console.error('Error saving slider:', error);
+    }
+});
+
 initSlider();
+loadSliders();
 loadProperties();

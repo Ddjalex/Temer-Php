@@ -138,7 +138,107 @@ function generateId() {
 
 function getSliders() {
     $db = Database::getInstance();
-    return $db->fetchAll("SELECT * FROM sliders WHERE active = 1 ORDER BY display_order ASC");
+    return $db->fetchAll("SELECT * FROM sliders ORDER BY display_order ASC");
+}
+
+function getSliderById($id) {
+    $db = Database::getInstance();
+    return $db->fetchOne("SELECT * FROM sliders WHERE id = ?", [$id]);
+}
+
+function createSlider($data) {
+    $db = Database::getInstance();
+    
+    $sql = "INSERT INTO sliders (title, subtitle, image, display_order, active, created_at) 
+            VALUES (?, ?, ?, ?, ?, NOW())";
+    
+    $params = [
+        $data['title'],
+        $data['subtitle'] ?? '',
+        $data['image'] ?? '',
+        $data['display_order'] ?? 0,
+        $data['active'] ?? 1
+    ];
+    
+    $db->query($sql, $params);
+    $id = $db->lastInsertId();
+    return getSliderById($id);
+}
+
+function updateSlider($id, $data) {
+    $db = Database::getInstance();
+    
+    $fields = [];
+    $params = [];
+    
+    if (isset($data['title'])) {
+        $fields[] = "title = ?";
+        $params[] = $data['title'];
+    }
+    if (isset($data['subtitle'])) {
+        $fields[] = "subtitle = ?";
+        $params[] = $data['subtitle'];
+    }
+    if (isset($data['image'])) {
+        $fields[] = "image = ?";
+        $params[] = $data['image'];
+    }
+    if (isset($data['display_order'])) {
+        $fields[] = "display_order = ?";
+        $params[] = $data['display_order'];
+    }
+    if (isset($data['active'])) {
+        $fields[] = "active = ?";
+        $params[] = $data['active'];
+    }
+    
+    if (empty($fields)) {
+        return getSliderById($id);
+    }
+    
+    $sql = "UPDATE sliders SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE id = ?";
+    $params[] = $id;
+    
+    $db->query($sql, $params);
+    return getSliderById($id);
+}
+
+function deleteSlider($id) {
+    $db = Database::getInstance();
+    $db->query("DELETE FROM sliders WHERE id = ?", [$id]);
+    return true;
+}
+
+function handleImageUpload($file, $type = 'slider') {
+    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        return ['success' => false, 'error' => 'No file uploaded or upload error'];
+    }
+    
+    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!in_array($file['type'], $allowedTypes)) {
+        return ['success' => false, 'error' => 'Invalid file type. Only JPG, PNG, GIF, and WEBP allowed'];
+    }
+    
+    $maxSize = 5 * 1024 * 1024;
+    if ($file['size'] > $maxSize) {
+        return ['success' => false, 'error' => 'File too large. Maximum 5MB allowed'];
+    }
+    
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = uniqid($type . '_') . '.' . $extension;
+    
+    $uploadDir = __DIR__ . '/../frontend/assets/images/';
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+    
+    $filepath = $uploadDir . $filename;
+    
+    if (move_uploaded_file($file['tmp_name'], $filepath)) {
+        return ['success' => true, 'url' => '/frontend/assets/images/' . $filename];
+    }
+    
+    return ['success' => false, 'error' => 'Failed to save file'];
 }
 
 function getSettings() {
