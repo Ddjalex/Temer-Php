@@ -13,22 +13,26 @@ class Database {
                 if (strpos(trim($line), '#') === 0) continue;
                 if (strpos($line, '=') !== false) {
                     list($key, $value) = explode('=', $line, 2);
-                    $_ENV[trim($key)] = trim($value);
+                    // Ensure environment variables are loaded, unquoting values
+                    $_ENV[trim($key)] = trim($value, " \t\n\r\0\x0B\"'");
                 }
             }
         }
 
-        $host = getenv('PGHOST');
-        $port = getenv('PGPORT') ?: '5432';
-        $dbname = getenv('PGDATABASE');
-        $user = getenv('PGUSER');
-        $password = getenv('PGPASSWORD');
+        // --- Use standard MySQL environment variables ---
+        $host = getenv('DB_HOST');
+        $port = getenv('DB_PORT') ?: '3306'; // Default MySQL port
+        $dbname = getenv('DB_DATABASE');
+        $user = getenv('DB_USERNAME'); // Using DB_USERNAME as per your previous .env snippet
+        $password = getenv('DB_PASSWORD');
+        $ssl_ca = getenv('MYSQL_SSL_CA'); // New variable for SSL Certificate path
 
         if (!$host || !$dbname || !$user || !$password) {
-            throw new Exception('Database credentials not configured. Please check environment variables (PGHOST, PGDATABASE, PGUSER, PGPASSWORD).');
+            throw new Exception('Database credentials not configured. Please check environment variables (DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD).');
         }
 
-        $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+        // --- Change DSN to use 'mysql' driver ---
+        $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
         
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -36,6 +40,12 @@ class Database {
             PDO::ATTR_EMULATE_PREPARES => false,
             PDO::ATTR_TIMEOUT => 30
         ];
+        
+        // --- Add SkySQL/MariaDB SSL options if the certificate path is set ---
+        if ($ssl_ca) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $ssl_ca;
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true; 
+        }
 
         try {
             $this->pdo = new PDO($dsn, $user, $password, $options);
