@@ -53,7 +53,7 @@
             ]).then(([property, contactPhone]) => {
                 const propertyUrl = window.location.href;
                 const phone = contactPhone.replace(/\D/g, '');
-                const whatsappMessage = encodeURIComponent(`Hi, I'm interested in this property:\n${property.title}\nLocation: ${property.location}\nPrice: $${property.price.toLocaleString()}\n\nView details: ${propertyUrl}`);
+                const whatsappMessage = encodeURIComponent(`I'm interested in ${property.title}. Property link: ${propertyUrl}`);
                 
                 document.getElementById('propertyDetail').innerHTML = `
                     <div class="property-detail-content">
