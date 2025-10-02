@@ -265,6 +265,28 @@ header nav a:hover {
     flex-wrap: wrap;
     font-size: 0.9rem;
     color: #666;
+    margin-bottom: 15px;
+}
+
+.property-actions {
+    margin-top: 15px;
+}
+
+.view-details-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--temer-green);
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.view-details-btn:hover {
+    background: var(--temer-dark);
 }
 
 .property-detail-content {
@@ -303,6 +325,35 @@ header nav a:hover {
 
 .btn:hover {
     background: var(--temer-dark);
+}
+
+.property-detail-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.whatsapp-share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #25D366;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.whatsapp-share-btn:hover {
+    background: #20BA5A;
+}
+
+.whatsapp-share-btn svg {
+    width: 20px;
+    height: 20px;
 }
 
 .admin-section {
