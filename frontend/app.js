@@ -166,7 +166,34 @@ function updateHeroSlider(sliders) {
     initSlider();
 }
 
+async function loadContactButtons() {
+    try {
+        const response = await fetch('/api/settings');
+        const settings = await response.json();
+        
+        if (settings.contact_phone) {
+            const phone = settings.contact_phone.replace(/\D/g, '');
+            
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const callBtn = document.getElementById('callBtn');
+            
+            if (whatsappBtn) {
+                whatsappBtn.href = `https://wa.me/${phone}`;
+                whatsappBtn.style.display = 'flex';
+            }
+            
+            if (callBtn) {
+                callBtn.href = `tel:${settings.contact_phone}`;
+                callBtn.style.display = 'flex';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading contact buttons:', error);
+    }
+}
+
 loadSliders();
+loadContactButtons();
 if (document.getElementById('propertiesList')) {
     loadProperties();
 }
