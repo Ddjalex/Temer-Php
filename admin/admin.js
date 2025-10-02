@@ -397,6 +397,10 @@ async function loadSettings() {
         document.getElementById('siteTagline').value = settings.site_tagline || '';
         document.getElementById('contactPhone').value = settings.contact_phone || '';
         document.getElementById('contactEmail').value = settings.contact_email || '';
+        document.getElementById('facebookUrl').value = settings.facebook_url || '';
+        document.getElementById('instagramUrl').value = settings.instagram_url || '';
+        document.getElementById('twitterUrl').value = settings.twitter_url || '';
+        document.getElementById('linkedinUrl').value = settings.linkedin_url || '';
     } catch (error) {
         console.error('Error loading settings:', error);
     }
@@ -409,7 +413,11 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
         site_name: document.getElementById('siteName').value,
         site_tagline: document.getElementById('siteTagline').value,
         contact_phone: document.getElementById('contactPhone').value,
-        contact_email: document.getElementById('contactEmail').value
+        contact_email: document.getElementById('contactEmail').value,
+        facebook_url: document.getElementById('facebookUrl').value,
+        instagram_url: document.getElementById('instagramUrl').value,
+        twitter_url: document.getElementById('twitterUrl').value,
+        linkedin_url: document.getElementById('linkedinUrl').value
     };
     
     const messageDiv = document.getElementById('settingsMessage');

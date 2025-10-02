@@ -195,6 +195,25 @@ requireLogin();
                             <input type="email" id="contactEmail" name="contact_email">
                         </div>
                     </div>
+                    <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary-color);">Social Media Links</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="facebookUrl">Facebook URL</label>
+                            <input type="url" id="facebookUrl" name="facebook_url" placeholder="https://facebook.com/yourpage">
+                        </div>
+                        <div class="form-group">
+                            <label for="instagramUrl">Instagram URL</label>
+                            <input type="url" id="instagramUrl" name="instagram_url" placeholder="https://instagram.com/yourpage">
+                        </div>
+                        <div class="form-group">
+                            <label for="twitterUrl">Twitter URL</label>
+                            <input type="url" id="twitterUrl" name="twitter_url" placeholder="https://twitter.com/yourpage">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkedinUrl">LinkedIn URL</label>
+                            <input type="url" id="linkedinUrl" name="linkedin_url" placeholder="https://linkedin.com/company/yourpage">
+                        </div>
+                    </div>
                     <div id="settingsMessage"></div>
                     <div class="btn-group">
                         <button type="submit" class="btn">Save Settings</button>
