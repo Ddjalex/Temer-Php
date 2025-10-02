@@ -62,4 +62,9 @@ if ($uri === 'test-db') {
     exit();
 }
 
+if ($uri === 'upload-form') {
+    require __DIR__ . '/upload-form.php';
+    exit();
+}
+
 require __DIR__ . '/frontend/index.php';
