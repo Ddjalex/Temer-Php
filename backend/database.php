@@ -5,17 +5,17 @@ class Database {
     private $pdo;
 
     private function __construct() {
-        $host = getenv('DB_HOST');
-        $port = getenv('DB_PORT') ?: '3306';
-        $dbname = getenv('DB_NAME');
-        $user = getenv('DB_USER');
-        $password = getenv('DB_PASSWORD');
+        $host = getenv('PGHOST');
+        $port = getenv('PGPORT') ?: '5432';
+        $dbname = getenv('PGDATABASE');
+        $user = getenv('PGUSER');
+        $password = getenv('PGPASSWORD');
 
         if (!$host || !$dbname || !$user || !$password) {
-            throw new Exception('Database credentials not configured. Please set DB_HOST, DB_NAME, DB_USER, and DB_PASSWORD in Replit Secrets.');
+            throw new Exception('Database credentials not configured. Please check PostgreSQL environment variables.');
         }
 
-        $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+        $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
         
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
