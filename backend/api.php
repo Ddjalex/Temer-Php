@@ -267,6 +267,24 @@ function handleSettings($method) {
             $settings = getSettings();
             echo json_encode($settings);
             break;
+            
+        case 'PUT':
+            $input = json_decode(file_get_contents('php://input'), true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid JSON']);
+                return;
+            }
+            
+            $updates = [];
+            foreach ($input as $key => $value) {
+                $updates[$key] = updateSetting($key, strip_tags($value));
+            }
+            
+            echo json_encode(['success' => true, 'settings' => getSettings()]);
+            break;
+            
         default:
             http_response_code(405);
             echo json_encode(['error' => 'Method not allowed']);

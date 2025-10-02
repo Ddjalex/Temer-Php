@@ -250,3 +250,17 @@ function getSettings() {
     }
     return $result;
 }
+
+function updateSetting($key, $value) {
+    $db = Database::getInstance();
+    
+    $existing = $db->fetchOne("SELECT * FROM settings WHERE setting_key = ?", [$key]);
+    
+    if ($existing) {
+        $db->query("UPDATE settings SET setting_value = ?, updated_at = NOW() WHERE setting_key = ?", [$value, $key]);
+    } else {
+        $db->query("INSERT INTO settings (setting_key, setting_value, setting_type, updated_at) VALUES (?, ?, 'text', NOW())", [$key, $value]);
+    }
+    
+    return ['setting_key' => $key, 'setting_value' => $value];
+}
