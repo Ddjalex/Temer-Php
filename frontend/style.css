@@ -38,8 +38,8 @@ body {
 }
 
 header {
-    background: var(--temer-green);
-    color: white;
+    background: white;
+    color: var(--temer-dark);
     padding: 1rem 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -67,7 +67,7 @@ header nav {
 }
 
 header nav a {
-    color: white;
+    color: var(--temer-dark);
     text-decoration: none;
     padding: 8px 16px;
     border-radius: 4px;
@@ -75,7 +75,8 @@ header nav a {
 }
 
 header nav a:hover {
-    background: var(--temer-dark);
+    background: var(--temer-light);
+    color: var(--temer-dark);
 }
 
 .hero-slider {
@@ -622,7 +623,7 @@ footer {
 
 /* Dark Mode Toggle Button */
 .dark-mode-toggle {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--temer-green);
     border: none;
     color: white;
     padding: 8px 12px;
@@ -636,7 +637,7 @@ footer {
 }
 
 .dark-mode-toggle:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--temer-dark);
 }
 
 .dark-mode-toggle svg {
