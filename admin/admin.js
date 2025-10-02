@@ -93,7 +93,7 @@ function displayPropertiesTable(properties) {
         <tr data-property-id="${escapeHtml(property.id)}">
             <td>${escapeHtml(property.title)}</td>
             <td>${escapeHtml(property.location)}</td>
-            <td>$${property.price.toLocaleString()}</td>
+            <td>ETB ${property.price.toLocaleString()}</td>
             <td>${property.type === 'sale' ? 'For Sale' : 'For Rent'}</td>
             <td>
                 <button class="btn-edit">Edit</button>

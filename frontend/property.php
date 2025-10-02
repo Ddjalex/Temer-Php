@@ -64,7 +64,7 @@
                     <div class="property-detail-content">
                         <img src="${escapeHtml(property.image || '/frontend/assets/images/default-property.jpg')}" alt="${escapeHtml(property.title)}">
                         <h2>${escapeHtml(property.title)}</h2>
-                        <p class="price">$${property.price.toLocaleString()}</p>
+                        <p class="price">ETB ${property.price.toLocaleString()}</p>
                         <p class="location">${escapeHtml(property.location)}</p>
                         <div class="property-info">
                             <span>${property.bedrooms} Bedrooms</span>

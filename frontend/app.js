@@ -106,7 +106,7 @@ async function displayProperties(properties) {
             <img src="${escapeHtml(property.image || '/frontend/assets/images/default-property.jpg')}" alt="${escapeHtml(property.title)}">
             <div class="property-card-content">
                 <h3>${escapeHtml(property.title)}</h3>
-                <p class="price">$${property.price.toLocaleString()}</p>
+                <p class="price">ETB ${property.price.toLocaleString()}</p>
                 <p class="location">${escapeHtml(property.location)}</p>
                 <div class="property-info">
                     <span>${property.bedrooms} Beds</span>
